@@ -102,10 +102,12 @@ def blinkDetector(eyePoints):
     HorizontalDistance = eucaldainDistance(eyePoints[0], eyePoints[3])
     # print()
 
+    # when blinking, VerticalDistance -> 0, therefore blinkRatio -> ∞ 
     blinkRatio = (HorizontalDistance/VerticalDistance)
+    # Interpretation:
+    # When the eye is open, the vertical distance is larger, resulting in a smaller ratio.
+    # When the eye blinks (closes), the vertical distance becomes very small, causing the ratio to increase dramatically.
     return blinkRatio, topMid, bottomMid
-
-# Eyes Tracking function.
 
 
 def EyeTracking(image, gray, eyePoints):

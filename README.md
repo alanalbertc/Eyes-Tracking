@@ -57,6 +57,10 @@ Steps are involved to run the code.
 
    `pip install dlib`
 
+   Install dlib with anaconda
+   `conda install -c conda-forge dlib`
+   
+
    #### Linux or Mac OS
 
    - Just you need Cmake that all here on Linux and Mac OS

@@ -2,11 +2,15 @@ import cv2 as cv
 import numpy as np
 import module as m
 import time
+import os
 
 # Variables
 COUNTER = 0
 TOTAL_BLINKS = 0
 CLOSED_EYES_FRAME = 3
+BLINK_THRESHOLD = 4
+SLEEP_FRAME = 90 # (30 fps * time)  
+DELAY = 60 
 cameraID = 0
 videoPath = "Video/Your Eyes Independently_Trim5.mp4"
 # variables for frame rate.
@@ -66,15 +70,22 @@ while True:
         cv.circle(image, circleCenter, (int(blinkRatio*3.2)), m.CYAN, 2)
         cv.circle(image, circleCenter, (int(blinkRatio*2)), m.GREEN, 3)
 
-        if blinkRatio > 4:
+        if blinkRatio > BLINK_THRESHOLD:
             COUNTER += 1
             cv.putText(image, f'Blink', (70, 50),
                        m.fonts, 0.8, m.LIGHT_BLUE, 2)
-            # print("blink")
         else:
             if COUNTER > CLOSED_EYES_FRAME:
-                TOTAL_BLINKS += 1
+                TOTAL_BLINKS += 1                
+                #Close eyes for a long period of time
+                if(COUNTER >= SLEEP_FRAME):
+                    print(f"La computadora se apagara en {DELAY} segundos...")
+                    # os.system(f"shutdown /s /t {DELAY}")
+                
                 COUNTER = 0
+
+                
+            
         cv.putText(image, f'Total Blinks: {TOTAL_BLINKS}', (230, 17),
                    m.fonts, 0.5, m.ORANGE, 2)
 
