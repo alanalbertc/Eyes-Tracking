@@ -128,5 +128,24 @@ I am avalaible for paid work here <a href="https://www.fiverr.com/aiphile"> Five
     <img src="https://img.shields.io/badge/Twitter-blue?style=for-the-badge&logo=twitter&logoColor=white" alt="Twitter Badge"/>
   </a>
   
- 
+## Flask installation
+1. Make sure you are in your environment
+	$conda activate <environment_name>
+
+2. Flask instalation
+  (<environment-name>)$pip install flask
+
+3. Declare FLASK_APP variable
+### On Linux: 
+  $export FLASK_APP=server.py 
+  ### On Windows: 
+  $set FLASK_APP=server.py 
+  ### PowerShell: 
+  $$env:FLASK_APP="server.py"
+
+4. Start the server
+    $flask run
+
+    It usually runs on 127.0.0.1:5000
+
 </div>

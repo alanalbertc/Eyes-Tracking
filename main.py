@@ -10,7 +10,7 @@ TOTAL_BLINKS = 0
 CLOSED_EYES_FRAME = 3
 BLINK_THRESHOLD = 4
 SLEEP_FRAME = 90 # (30 fps * time)  
-DELAY = 60 
+DELAY = 35 
 cameraID = 0
 videoPath = "Video/Your Eyes Independently_Trim5.mp4"
 # variables for frame rate.
