@@ -1,0 +1,15 @@
+blinker==1.8.2
+click==8.1.7
+cmake==3.30.0
+colorama==0.4.6
+dlib @ file:///D:/bld/dlib-split_1716026520348/work
+Flask==3.0.3
+Flask-Cors==5.0.0
+importlib_metadata==8.5.0
+itsdangerous==2.2.0
+Jinja2==3.1.4
+MarkupSafe==2.1.5
+numpy @ file:///D:/bld/numpy_1718615140319/work/dist/numpy-2.0.0-cp39-cp39-win_amd64.whl#sha256=8ea5fe16b5620ca5d43e2b90e4c18b404bb1e1d9ad4bf8afafe5a0b34a1a2ab1
+opencv-python==4.10.0.84
+Werkzeug==3.0.4
+zipp==3.20.2
