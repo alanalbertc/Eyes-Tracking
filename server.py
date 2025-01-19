@@ -1,25 +1,21 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from flask_socketio import SocketIO, emit
 import cv2 as cv
-import numpy as np
 import module as m
 import time
 import threading
 
 app = Flask(__name__)
 CORS(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Variables
-flags = {
-    'eyePosition': ''
-}
-
+flags = {'eyePosition': ''}
 COUNTER = 0
 TOTAL_BLINKS = 0
 CLOSED_EYES_FRAME = 3
 BLINK_THRESHOLD = 4
-SLEEP_FRAME = 90  # (30 fps * time)
-DELAY = 35
 FRAME_COUNTER = 0
 START_TIME = time.time()
 FPS = 0
@@ -32,19 +28,17 @@ def capture_camera():
     while True:
         FRAME_COUNTER += 1
         ret, frame = camera.read()
-        if ret == False:
+        if not ret:
             break
 
         grayFrame = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-        height, width = grayFrame.shape
-        circleCenter = (int(width / 2), 50)
         image, face = m.faceDetector(frame, grayFrame)
         if face is not None:
             image, PointList = m.faceLandmakDetector(frame, grayFrame, face, False)
             RightEyePoint = PointList[36:42]
             LeftEyePoint = PointList[42:48]
-            leftRatio, topMid, bottomMid = m.blinkDetector(LeftEyePoint)
-            rightRatio, rTop, rBottom = m.blinkDetector(RightEyePoint)
+            leftRatio, _, _ = m.blinkDetector(LeftEyePoint)
+            rightRatio, _, _ = m.blinkDetector(RightEyePoint)
 
             blinkRatio = (leftRatio + rightRatio) / 2
 
@@ -55,8 +49,11 @@ def capture_camera():
                     TOTAL_BLINKS += 1
                     COUNTER = 0
 
-            mask, pos, color = m.EyeTracking(frame, grayFrame, RightEyePoint)
+            _, pos, _ = m.EyeTracking(frame, grayFrame, RightEyePoint)
             flags['eyePosition'] = pos
+
+            # Emitir la posición del ojo en tiempo real a través de WebSocket
+            socketio.emit('eye_position', {'position': pos})
 
         SECONDS = time.time() - START_TIME
         FPS = FRAME_COUNTER / SECONDS
@@ -72,19 +69,23 @@ def capture_camera():
 camera_thread = threading.Thread(target=capture_camera)
 camera_thread.start()
 
-@app.route('/api/flags', methods=['GET', 'POST'])
+@app.route('/api/flags', methods=['GET'])
 def handle_flags():
-    if request.method == 'GET':
-        return jsonify(flags)
-    elif request.method == 'POST':
-        action = request.json['action']
-        if action == 'left':
-            flags['leftFlag'] += 1
-        elif action == 'right':
-            flags['rightFlag'] += 1
-        elif action == 'select':
-            flags['selectFlag'] += 1
-        return jsonify({'message': 'Flags updated successfully'})
+    return jsonify(flags)
+
+@socketio.on('connect')
+def handle_connect():
+    print("Cliente conectado a WebSocket")
+    emit('server_message', {'message': 'Conexión exitosa con WebSocket'})
+
+@socketio.on('command')
+def handle_command(data):
+    print(f"Comando recibido: {data}")
+    # Ejemplo: manejar comandos desde el cliente WebSocket
+    if data.get('action') == 'left':
+        emit('server_message', {'response': 'Movimiento a la izquierda ejecutado'})
+    elif data.get('action') == 'right':
+        emit('server_message', {'response': 'Movimiento a la derecha ejecutado'})
 
 if __name__ == '__main__':
-    app.run()
+    socketio.run(app, host='127.0.0.1', port=5000)
