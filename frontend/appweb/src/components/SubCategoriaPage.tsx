@@ -76,7 +76,7 @@ const SubcategoriaPage: React.FC = () => {
                             />
                         )}
                         <p className="text-2xl text-gray-800">
-                            En breve alguien acudirá de acuerdo a tu solicitud.
+                            En breve alguien acudirá de acuerdo a tu solicitud. Gracias por tu paciencia.
                         </p>
                         <p className="text-gray-700">
                             Motivo: {subcategoria.descripcion}
