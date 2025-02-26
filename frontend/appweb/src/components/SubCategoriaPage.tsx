@@ -1,47 +1,91 @@
-import React from "react";
-import Carousel from "./Carousel";
-import { Navigate, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { getSubcategoria } from "../services/categoryService";
+import { Subcategoria } from "../types";
+import Loader from "./Loader";
 
-interface SubcategoriaPageProps {
-  subcategoria: string;
-}
+const SubcategoriaPage: React.FC = () => {
+    const { id } = useParams<{ id: string }>();
+    const [subcategoria, setSubcategoria] = useState<Subcategoria | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-const SubcategoriaPage: React.FC<SubcategoriaPageProps> = ({ subcategoria }) => {
-  const navigate = useNavigate();
+    useEffect(() => {
+        const loadSubcategoria = async () => {
+            if (!id) return;
 
-  // Datos específicos para cada subcategoría
-  const subcategoriasData: Record<string, { titulo: string; descripcion: string; ruta: string;}[]> = {
-    "1": [
-      { titulo: "Subcategoría 1 - Título 1", descripcion: "Descripción 1", ruta: "/subcategoria-1"},
-      { titulo: "Subcategoría 1 - Título 2", descripcion: "Descripción 2", ruta: "/subcategoria-2"},
-      { titulo: "Subcategoría 1 - Título 3", descripcion: "Descripción 3", ruta: "/subcategoria-1" },
-    ],
-    "2": [
-        { titulo: "Subcategoría 2 - Título 1", descripcion: "Descripción 1", ruta: "/subcategoria-1"},
-        { titulo: "Subcategoría 2 - Título 2", descripcion: "Descripción 2", ruta: "/subcategoria-2"},
-      { titulo: "Subcategoría 2 - Título 3", descripcion: "Descripción 3", ruta: "/subcategoria-3"},
-    ],
-    "3": [
-      { titulo: "Subcategoría 3 - Título 1", descripcion: "Descripción 1", ruta: "/subcategoria-1"},
-      { titulo: "Subcategoría 3 - Título 2", descripcion: "Descripción 2", ruta: "/subcategoria-2"},
-      { titulo: "Subcategoría 3 - Título 3", descripcion: "Descripción 3", ruta: "/subcategoria-3"},
-    ],
-  };
+            try {
+                setIsLoading(true);
+                const data = await getSubcategoria(id);
+                setSubcategoria(data);
+            } catch (err) {
+                setError(
+                    err instanceof Error ? err.message : "Error desconocido"
+                );
+            } finally {
+                setIsLoading(false);
+            }
+        };
 
-  // Obtiene los datos correspondientes a la subcategoría
-  const items = subcategoriasData[subcategoria] || [];
+        loadSubcategoria();
+    }, [id]);
 
-  return (
-    <>
-      <div>
-      <h1 style={{ textAlign: "center" }}>Subcategoría {subcategoria}</h1>
-        <Carousel items={items} onCardClick={() => {}} />
-      </div>
-      <div>
-        <button type="button" className="btn btn-primary" onClick={() => {navigate(-1)}}>atras</button>
-      </div>
-    </>
-  );
+    return (
+        <>
+            {isLoading && (
+                <>
+                    <div>
+                        <Loader />
+                        <p className="pt-10 text-2xl text-center">
+                            Cargando subcategoria...
+                        </p>
+                    </div>
+                </>
+            )}
+
+            {error && (
+                <div className="text-center">
+                    <span className="text-5xl mb-4">⚠️</span>
+                    <p className="text-3xl font-semibold text-center text-red-600 mb-2">
+                        Ha ocurrido un error!
+                    </p>
+                    <p className="text-xl text-gray-600 mb-4">{error}</p>
+                    <button
+                        onClick={() => window.location.reload()}
+                        className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300"
+                    >
+                        Reintentar
+                    </button>
+                </div>
+            )}
+
+            {!error && !isLoading && subcategoria && (
+                <>
+                    <div className="my-auto text-center ">
+                        <div className="text-2xl font-bold mb-4">
+                            Has seleccionado
+                        </div>
+                        <div className="text-5xl md:text-8xl font-bold mb-4 text-cyan-500">
+                            {subcategoria.titulo}
+                        </div>
+                        {subcategoria.img && (
+                            <img
+                                src={subcategoria.img}
+                                alt={subcategoria.titulo}
+                                className="w-full max-w-md mx-auto rounded-lg shadow-lg mb-4"
+                            />
+                        )}
+                        <p className="text-2xl text-gray-800">
+                            En breve alguien acudirá de acuerdo a tu solicitud. Gracias por tu paciencia.
+                        </p>
+                        <p className="text-gray-700">
+                            Motivo: {subcategoria.descripcion}
+                        </p>
+                    </div>
+                </>
+            )}
+        </>
+    );
 };
 
 export default SubcategoriaPage;

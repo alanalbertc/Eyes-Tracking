@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
+import CarouselControl from "./CarouselControl";
 
 interface CarouselProps {
-  items: { titulo: string; descripcion: string; ruta: string }[];
+  items: { titulo: string; descripcion: string; ruta?: string, img?: string }[];
   onCardClick: (index: number) => void;
 }
 
@@ -60,7 +61,7 @@ const Carousel: React.FC<CarouselProps> = ({ items, onCardClick }) => {
       className="carousel slide"
       ref={carouselRef}
     >
-      <div className="carousel-inner">
+      <div className="carousel-inner" style={{ border: "none"}}> 
         {items.map((item, index) => (
           <div
             key={index}
@@ -68,14 +69,21 @@ const Carousel: React.FC<CarouselProps> = ({ items, onCardClick }) => {
           >
             <div
               className="card"
-              style={{ cursor: "pointer" }}
+              style={{ cursor: "pointer", border:"none" }}
               onClick={() => onCardClick(index)}
             >
               <div className="card-body">
-                <h5 className="card-title" style={{ textAlign: "center" }}>
+                <div className="w-full flex text-center flex">
+                  {
+                    item.img && (
+                      <img className="w-20 mx-auto " src={item.img} />
+                    )
+                  }
+                  </div>
+                <div className="text-3xl md:text-6xl font-bold text-center first-letter:text-cyan-500 mb-2" style={{ textAlign: "center" }}>
                   {item.titulo}
-                </h5>
-                <p className="card-text" style={{ textAlign: "center" }}>
+                </div>
+                <p className="md:text-2xl text-gray-600 card-text" style={{ textAlign: "center" }}>
                   {item.descripcion}
                 </p>
               </div>
@@ -84,27 +92,15 @@ const Carousel: React.FC<CarouselProps> = ({ items, onCardClick }) => {
         ))}
       </div>
 
-      <button
-        className="carousel-control-prev"
-        type="button"
-        data-bs-target="#carouselExampleControls"
-        data-bs-slide="prev"
-        style={{ backgroundColor: "black" }}
-      >
-        <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span className="visually-hidden">Previous</span>
-      </button>
-
-      <button
-        className="carousel-control-next"
-        type="button"
-        data-bs-target="#carouselExampleControls"
-        data-bs-slide="next"
-        style={{ backgroundColor: "black" }}
-      >
-        <span className="carousel-control-next-icon" aria-hidden="true"></span>
-        <span className="visually-hidden">Next</span>
-      </button>
+      <CarouselControl 
+        direction="prev" 
+        targetId="carouselExampleControls" 
+      />
+      
+      <CarouselControl 
+        direction="next" 
+        targetId="carouselExampleControls" 
+      />
     </div>
   );
 };
