@@ -8,7 +8,7 @@ export const mockCategorias: Categoria[] = [
         descripcion: "Solicitar alimentos, bebidas y asistencia para comer",
         ruta: "/comida",
         img: "images/1.png",
-        subcategoriasIds: ["sub_0", "sub_1", "sub_2"] // Desayuno, Almuerzo, Cena
+        subcategoriasIds: ["sub_0", "sub_1", "sub_2", "sub_22"] // Desayuno, Almuerzo, Cena, Regresar a la página anterior
     },
     {
         id: "cat_2",
@@ -16,7 +16,7 @@ export const mockCategorias: Categoria[] = [
         descripcion: "Ayuda con higiene personal, vestimenta y movilidad",
         ruta: "/asistencia-personal",
         img: "images/2.png",
-        subcategoriasIds: ["sub_3", "sub_4", "sub_5"] // Higiene Personal, Vestimenta, Movilidad
+        subcategoriasIds: ["sub_3", "sub_4", "sub_5", "sub_22"] // Higiene Personal, Vestimenta, Movilidad
     },
     {
         id: "cat_3",
@@ -24,7 +24,7 @@ export const mockCategorias: Categoria[] = [
         descripcion: "Atención médica, medicamentos y emergencias",
         ruta: "/asistencia-medica",
         img: "images/3.png",
-        subcategoriasIds: ["sub_8", "sub_9", "sub_10"] // Medicamentos, Emergencia, Curaciones
+        subcategoriasIds: ["sub_8", "sub_9", "sub_10", "sub_22"] // Medicamentos, Emergencia, Curaciones
     },
     {
         id: "cat_4",
@@ -32,7 +32,7 @@ export const mockCategorias: Categoria[] = [
         descripcion: "Actividades recreativas, multimedia y comunicación",
         ruta: "/entretenimiento",
         img: "images/4.png",
-        subcategoriasIds: ["sub_11", "sub_12", "sub_13", "sub_14"] // TV, Música, Lectura, Juegos
+        subcategoriasIds: ["sub_11", "sub_12", "sub_13", "sub_14", "sub_22"] // TV, Música, Lectura, Juegos
     },
     {
         id: "cat_5",
@@ -40,7 +40,7 @@ export const mockCategorias: Categoria[] = [
         descripcion: "Necesidades básicas, baño y cuidados esenciales",
         ruta: "/necesidades",
         img: "images/5.png",
-        subcategoriasIds: ["sub_15", "sub_16", "sub_17", "sub_18"] // Baño, Cambio Posición, Limpieza, Temperatura
+        subcategoriasIds: ["sub_15", "sub_16", "sub_17", "sub_18", "sub_22"] // Baño, Cambio Posición, Limpieza, Temperatura
     },
     {
         id: "cat_6",
@@ -48,6 +48,6 @@ export const mockCategorias: Categoria[] = [
         descripcion: "Solicitudes adicionales y asistencia variada",
         ruta: "/otro",
         img: "images/6.png",
-        subcategoriasIds: ["sub_19", "sub_20", "sub_21"] // Llamar, Ayuda Especial, Reportar Problema
+        subcategoriasIds: ["sub_19", "sub_20", "sub_21", "sub_22"] // Llamar, Ayuda Especial, Reportar Problema
     }
 ];

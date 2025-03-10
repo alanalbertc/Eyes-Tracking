@@ -19,10 +19,12 @@ BLINK_THRESHOLD = 4
 FRAME_COUNTER = 0
 START_TIME = time.time()
 FPS = 0
+last_emit_time = 0  # Track last WebSocket emission time
+CENTER_COUNTER = 0
 
 # Capture thread
 def capture_camera():
-    global flags, COUNTER, TOTAL_BLINKS, FRAME_COUNTER, FPS
+    global flags, COUNTER, TOTAL_BLINKS, FRAME_COUNTER, FPS, last_emit_time, CENTER_COUNTER
     camera = cv.VideoCapture(0)
 
     while True:
@@ -52,8 +54,24 @@ def capture_camera():
             _, pos, _ = m.EyeTracking(frame, grayFrame, RightEyePoint)
             flags['eyePosition'] = pos
 
-            # Emitir la posición del ojo en tiempo real a través de WebSocket
-            socketio.emit('eye_position', {'position': pos})
+            # Emit eye position only if 1 second has passed
+            current_time = time.time()
+            if current_time - last_emit_time >= 1:
+                    if pos == "Center":
+                        CENTER_COUNTER += 1
+                    else:
+                        CENTER_COUNTER = 0  
+
+                    if CENTER_COUNTER >= 3:
+                        pos = "Select"
+                        CENTER_COUNTER = 0
+
+                    try:
+                        socketio.emit('eye_position', {'position': pos})
+                    except Exception as e:
+                        print(f"⚠️ WebSocket Error: {e}")
+
+                    last_emit_time = current_time
 
         SECONDS = time.time() - START_TIME
         FPS = FRAME_COUNTER / SECONDS

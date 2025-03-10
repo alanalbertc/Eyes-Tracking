@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { getSubcategoria } from "../services/categoryService";
 import { Subcategoria } from "../types";
 import Loader from "./Loader";
 
 const SubcategoriaPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate(); // Hook para manejar navegación
     const [subcategoria, setSubcategoria] = useState<Subcategoria | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -17,6 +18,13 @@ const SubcategoriaPage: React.FC = () => {
             try {
                 setIsLoading(true);
                 const data = await getSubcategoria(id);
+                
+                // Si la subcategoría es "Retroceder", ir a la página principal
+                if (data.titulo === "Retroceder") {
+                    navigate("/"); // Redirigir a la página principal
+                    return;
+                }
+
                 setSubcategoria(data);
             } catch (err) {
                 setError(
@@ -28,19 +36,17 @@ const SubcategoriaPage: React.FC = () => {
         };
 
         loadSubcategoria();
-    }, [id]);
+    }, [id, navigate]);
 
     return (
         <>
             {isLoading && (
-                <>
-                    <div>
-                        <Loader />
-                        <p className="pt-10 text-2xl text-center">
-                            Cargando subcategoria...
-                        </p>
-                    </div>
-                </>
+                <div>
+                    <Loader />
+                    <p className="pt-10 text-2xl text-center">
+                        Cargando subcategoría...
+                    </p>
+                </div>
             )}
 
             {error && (
@@ -60,29 +66,27 @@ const SubcategoriaPage: React.FC = () => {
             )}
 
             {!error && !isLoading && subcategoria && (
-                <>
-                    <div className="my-auto text-center ">
-                        <div className="text-2xl font-bold mb-4">
-                            Has seleccionado
-                        </div>
-                        <div className="text-5xl md:text-8xl font-bold mb-4 text-cyan-500">
-                            {subcategoria.titulo}
-                        </div>
-                        {subcategoria.img && (
-                            <img
-                                src={subcategoria.img}
-                                alt={subcategoria.titulo}
-                                className="w-full max-w-md mx-auto rounded-lg shadow-lg mb-4"
-                            />
-                        )}
-                        <p className="text-2xl text-gray-800">
-                            En breve alguien acudirá de acuerdo a tu solicitud. Gracias por tu paciencia.
-                        </p>
-                        <p className="text-gray-700">
-                            Motivo: {subcategoria.descripcion}
-                        </p>
+                <div className="my-auto text-center">
+                    <div className="text-2xl font-bold mb-4">
+                        Has seleccionado
                     </div>
-                </>
+                    <div className="text-5xl md:text-8xl font-bold mb-4 text-cyan-500">
+                        {subcategoria.titulo}
+                    </div>
+                    {subcategoria.img && (
+                        <img
+                            src={subcategoria.img}
+                            alt={subcategoria.titulo}
+                            className="w-full max-w-md mx-auto rounded-lg shadow-lg mb-4"
+                        />
+                    )}
+                    <p className="text-2xl text-gray-800">
+                        En breve alguien acudirá de acuerdo a tu solicitud. Gracias por tu paciencia.
+                    </p>
+                    <p className="text-gray-700">
+                        Motivo: {subcategoria.descripcion}
+                    </p>
+                </div>
             )}
         </>
     );

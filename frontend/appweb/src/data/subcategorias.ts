@@ -125,5 +125,9 @@ export const mockSubcategorias: Subcategoria[] = [
         titulo: "Reportar Problema",
         descripcion: "Informar sobre algún inconveniente",
         imagen: "/images/problema.png"
+    }, {
+        id: "sub_22",
+        titulo: "Retroceder",
+        descripcion: "Regresar a la página anterior",
     }
 ];
