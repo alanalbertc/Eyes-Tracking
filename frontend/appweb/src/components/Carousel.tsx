@@ -31,7 +31,7 @@ const Carousel: React.FC<CarouselProps> = ({ items, onCardClick }) => {
     });
 
     newSocket.on("reconnect", (attemptNumber: number) => {
-      console.log(`Reconectado exitosamente en el intento ${attemptNumber}`);
+      console.log("Reconectado exitosamente en el intento ${attemptNumber}");
     });
 
     // Evento para recibir la posición del ojo y controlar el carrusel
@@ -47,6 +47,7 @@ const Carousel: React.FC<CarouselProps> = ({ items, onCardClick }) => {
           setCurrentIndex((prevIndex) => {
             const newIndex = prevIndex > 0 ? prevIndex - 1 : items.length - 1;
             currentIndexRef.current = newIndex; // Actualizar referencia
+            console.log("Nuevo índice después de Left:", newIndex);
             return newIndex;
           });
         } else if (data.position === "Right") {
@@ -54,11 +55,13 @@ const Carousel: React.FC<CarouselProps> = ({ items, onCardClick }) => {
           setCurrentIndex((prevIndex) => {
             const newIndex = prevIndex < items.length - 1 ? prevIndex + 1 : 0;
             currentIndexRef.current = newIndex; // Actualizar referencia
+            console.log("Nuevo índice después de Right:", newIndex);
             return newIndex;
           });
         } else if (data.position === "Select") {
           if (now - lastSelectTime < 2000) return; // Evita seleccionar rápidamente
           setLastSelectTime(now);
+          console.log("Índice seleccionado:", currentIndexRef.current);
           onCardClick(currentIndexRef.current); // Usar la referencia del índice actual
         }
       }
@@ -97,4 +100,4 @@ const Carousel: React.FC<CarouselProps> = ({ items, onCardClick }) => {
   );
 };
 
-export default Carousel;
+export default Carousel;
